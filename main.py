@@ -23,7 +23,7 @@ class Checkers_Piece:
 class Checkers_Board:
     def __init__(self):
         self.board = []
-        self.current_player = 'red'
+        self.current_player = 'blue'
         self.blue_score = 0
         self.red_score = 0
         self.game_over = False
@@ -309,34 +309,38 @@ class Checkers_Board:
                     
         if player_color == 'red':
             try: 
-                if self.board[starting_space[0] + 1][starting_space[1] - 1] is not None and self.board[starting_space[0] + 1] != 1 and self.board[starting_space[1] - 1] != 8:
-                    if self.board[starting_space[0] + 1][starting_space[1] - 1].color == opponent_color and self.board[starting_space[0] + 2][starting_space[1] + 2] == None:
-                        valid_jumps.append('down left')
-                        print('down left appended')
+                if starting_space[0] < 7 and starting_space[1] > 2:
+                    if self.board[starting_space[0] + 1][starting_space[1] - 1] is not None and self.board[starting_space[0] + 1] != 1 and self.board[starting_space[1] - 1] != 8:
+                        if self.board[starting_space[0] + 1][starting_space[1] - 1].color == opponent_color and self.board[starting_space[0] + 2][starting_space[1] + 2] == None:
+                            valid_jumps.append('down left')
+                            print('down left appended')
             except IndexError:
                 pass
 
             try:
-                if self.board[starting_space[0] + 1][starting_space[1] + 1] is not None and self.board[starting_space[0] + 1] != 1 and self.board[starting_space[1] + 1] != 8:
-                    if self.board[starting_space[0] + 1][starting_space[1] + 1].color == opponent_color and self.board[starting_space[0] + 2][starting_space[1] + 2] == None:
-                        valid_jumps.append('down right')
-                        print('down right appended')
+                if starting_space[0] < 7 and starting_space[1] < 7:
+                    if self.board[starting_space[0] + 1][starting_space[1] + 1] is not None and self.board[starting_space[0] + 1] != 1 and self.board[starting_space[1] + 1] != 8:
+                        if self.board[starting_space[0] + 1][starting_space[1] + 1].color == opponent_color and self.board[starting_space[0] + 2][starting_space[1] + 2] == None:
+                            valid_jumps.append('down right')
+                            print('down right appended')
             except IndexError:
                 pass
 
         if player_color == 'blue':
             try:
-                if self.board[starting_space[0] - 1][starting_space[1] - 1] is not None and self.board[starting_space[0] - 1] != 1 and self.board[starting_space[1] - 1] != 8:
-                    if self.board[starting_space[0] - 1][starting_space[1] - 1].color == opponent_color and self.board[starting_space[0] - 2][starting_space[1] - 2] == None:
-                        valid_jumps.append('up left')
-                        print('down left appended')
+                if starting_space[0] > 2 and starting_space[1] > 2:
+                    if self.board[starting_space[0] - 1][starting_space[1] - 1] is not None and self.board[starting_space[0] - 1] != 1 and self.board[starting_space[1] - 1] != 8:
+                        if self.board[starting_space[0] - 1][starting_space[1] - 1].color == opponent_color and self.board[starting_space[0] - 2][starting_space[1] - 2] == None:
+                            valid_jumps.append('up left')
+                            print('down left appended')
             except IndexError:
                 pass
             try:
-                if self.board[starting_space[0] - 1][starting_space[1] + 1] is not None and self.board[starting_space[0] - 1] != 1 and self.board[starting_space[1] + 1] != 8:
-                    if self.board[starting_space[0] - 1][starting_space[1] + 1].color == opponent_color and self.board[starting_space[0] - 2][starting_space[1] + 2] == None:
-                        valid_jumps.append('up right')
-                        print('up right appended')
+                if starting_space[0] > 2 and starting_space[1] < 7:
+                    if self.board[starting_space[0] - 1][starting_space[1] + 1] is not None and self.board[starting_space[0] - 1] != 1 and self.board[starting_space[1] + 1] != 8:
+                        if self.board[starting_space[0] - 1][starting_space[1] + 1].color == opponent_color and self.board[starting_space[0] - 2][starting_space[1] + 2] == None:
+                            valid_jumps.append('up right')
+                            print('up right appended')
             except IndexError:
                 pass   
         # we MIGHT need to redeclare starting_space every single recursive call
@@ -570,6 +574,8 @@ class Checkers_Board:
                         else:
                             # Just move the piece?
                             pass
+            elif self.board[starting_space[0]][starting_space[1]].king == True:
+                pass
                             
                         
 
@@ -581,8 +587,11 @@ board = Checkers_Board()
 board.make_board()
 
 board.board[4][3] = Checkers_Piece('blue')
-board.board[7][4] = None
+board.board[5][6] = Checkers_Piece('red')
+board.board[7][4] = Checkers_Piece('red')
 board.board[2][5] = None
+board.board[6][5] = None
+board.board[8][3].king = True
 
 while board.game_over == False:
     board.create_king()
