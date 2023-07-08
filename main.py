@@ -113,7 +113,6 @@ class Checkers_Board:
                             self.board[starting_space[0] + 1][starting_space[1] + 1] = None
                             self.board[ending_space[0]][ending_space[1]] = Checkers_Piece('red')
                             if enemy_piece_is_king == True:
-                                print('down right red is jump valid debug')
                                 self.board[ending_space[0]][ending_space[1]].king = True
                                 starting_space = ending_space
                                 self.king_double_jump_check(starting_space, player_color)
@@ -227,7 +226,6 @@ class Checkers_Board:
             
          # UP / RIGHT
         elif starting_space[0] - ending_space[0] == 2 and starting_space[1] - ending_space[1] == -2 and self.board[starting_space[0] - 1][starting_space[1] + 1] is not None:
-            print('test debug remove when done:')
             print(self.board[starting_space[0] - 1][starting_space[1] + 1].color)
             if self.board[starting_space[0] - 1][starting_space[1] + 1].color == opponent_color:
                 # Jump is valid
@@ -673,7 +671,6 @@ class Checkers_Board:
                     elif abs(starting_space[0] - ending_space[0]) == 1:
                         
                         if self.current_player == 'red':
-                            print('red movement debug1')
                             if starting_space[0] - ending_space[0] == -1 and self.board[ending_space[0]][ending_space[1]] is None:
                                 # move is valid AS FAR AS I KNOW
                                 self.board[starting_space[0]][starting_space[1]] = None
@@ -685,8 +682,7 @@ class Checkers_Board:
                                 # probably bad design?
                                 self.print_board()
                                 return self.get_users_move(self.current_player)
-                        elif self.current_player == 'blue':
-                            print('blue movement debug1')
+                        elif self.current_player == 'blue':                           
                             if starting_space[0] - ending_space[0] == 1 and self.board[ending_space[0]][ending_space[1]] is None:
                                 self.board[starting_space[0]][starting_space[1]] = None
                                 self.board[ending_space[0]][ending_space[1]] = Checkers_Piece('blue')
@@ -756,24 +752,6 @@ class Checkers_Board:
 # MAIN script:
 board = Checkers_Board()
 board.make_board()
-
-# board.board[4][3] = Checkers_Piece('blue')
-# board.board[5][6] = Checkers_Piece('red')
-# board.board[7][4] = Checkers_Piece('red')
-# board.board[8][3].king = True
-# board.board[2][5] = None
-# board.board[6][5] = None
-# board.board[4][3] = None
-# board.board[2][1] = None
-# board.board[7][8] = None
-# board.board[6][7].king = True
-
-# board.board[5][4] = Checkers_Piece('red')
-
-# board.board[2][3] = None
-board.board[6][1].king = True
-
-
 
 while board.game_over == False:
     board.create_king()
