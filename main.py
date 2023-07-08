@@ -71,10 +71,10 @@ class Checkers_Board:
              if piece is not None:
                 if piece.color == 'red' and piece.king == False:
                     self.board[8][i].king = True
-
+    # as it stands, ANY input that equals abs(2) is triggering 'is jump valid'
+    # could refactor and add a 'None' check before calling this func instead.
     def is_jump_valid(self, starting_space, ending_space, player_color):
-        # The conditional leading up to this function call ALREADY checked for ending_space to be None
-        # If this func returns false, we need to tell the user that the jump / move is invalid (in the greater scoped func that this one is nested in / called from)
+        
         enemy_piece_is_king = False
         if player_color == 'red':
             opponent_color = 'blue'
@@ -82,84 +82,93 @@ class Checkers_Board:
             opponent_color = 'red'
 
         if player_color == 'red':
-            if starting_space[0] - ending_space[0] == -2 and starting_space[1] - ending_space[1] == 2: # DOWN / LEFT
-                if self.board[starting_space[0] + 1][starting_space[1] - 1].color == opponent_color:
-                    # Jump is valid
-                    self.board[starting_space[0]][starting_space[1]] = None
-                    if self.board[starting_space[0] + 1][starting_space[1] - 1].king == True:
-                        enemy_piece_is_king = True
-                    self.board[starting_space[0] + 1][starting_space[1] - 1] = None
-                    self.board[ending_space[0]][ending_space[1]] = Checkers_Piece('red')
-                    if enemy_piece_is_king == True:
-                        self.board[ending_space[0]][ending_space[1]].king = True
-                        starting_space = ending_space
-                        self.king_double_jump_check(starting_space, player_color)
-                        return True
-                    starting_space = ending_space
-                    self.double_jump_check(starting_space, player_color)
-                    return True
-                else:
-                    # Jump is invalid. Return False
-                    return False
-            elif starting_space[0] - ending_space[0] == -2 and starting_space[1] - ending_space[1] == -2: # DOWN / RIGHT
-                if self.board[starting_space[0] + 1][starting_space[1] + 1].color == opponent_color:
-                    # Jump is valid
-                    self.board[starting_space[0]][starting_space[1]] = None
-                    if self.board[starting_space[0] + 1][starting_space[1] + 1].king == True: 
-                        enemy_piece_is_king = True
-                    self.board[starting_space[0] + 1][starting_space[1] + 1] = None
-                    self.board[ending_space[0]][ending_space[1]] = Checkers_Piece('red')
-                    if enemy_piece_is_king == True:
-                        print('down right red is jump valid debug')
-                        self.board[ending_space[0]][ending_space[1]].king = True
-                        starting_space = ending_space
-                        self.king_double_jump_check(starting_space, player_color)
-                        return True
-                    starting_space = ending_space
-                    self.double_jump_check(starting_space, player_color)
-                    return True
-                else:
-                    # Jump is invalid. Return False
-                    return False
+            try:
+                if starting_space[0] - ending_space[0] == -2 and starting_space[1] - ending_space[1] == 2: # DOWN / LEFT
+                    if self.board[starting_space[0] + 1][starting_space[1] - 1] is not None:
+                        if self.board[starting_space[0] + 1][starting_space[1] - 1].color == opponent_color:
+                            # Jump is valid
+                            self.board[starting_space[0]][starting_space[1]] = None
+                            if self.board[starting_space[0] + 1][starting_space[1] - 1].king == True:
+                                enemy_piece_is_king = True
+                            self.board[starting_space[0] + 1][starting_space[1] - 1] = None
+                            self.board[ending_space[0]][ending_space[1]] = Checkers_Piece('red')
+                            if enemy_piece_is_king == True:
+                                self.board[ending_space[0]][ending_space[1]].king = True
+                                starting_space = ending_space
+                                self.king_double_jump_check(starting_space, player_color)
+                                return True
+                            starting_space = ending_space
+                            self.double_jump_check(starting_space, player_color)
+                            return True
+                        else:
+                            # Jump is invalid. Return False
+                            return False
+                elif starting_space[0] - ending_space[0] == -2 and starting_space[1] - ending_space[1] == -2: # DOWN / RIGHT
+                    if self.board[starting_space[0] + 1][starting_space[1] + 1] is not None:
+                        if self.board[starting_space[0] + 1][starting_space[1] + 1].color == opponent_color:
+                            # Jump is valid
+                            self.board[starting_space[0]][starting_space[1]] = None
+                            if self.board[starting_space[0] + 1][starting_space[1] + 1].king == True: 
+                                enemy_piece_is_king = True
+                            self.board[starting_space[0] + 1][starting_space[1] + 1] = None
+                            self.board[ending_space[0]][ending_space[1]] = Checkers_Piece('red')
+                            if enemy_piece_is_king == True:
+                                print('down right red is jump valid debug')
+                                self.board[ending_space[0]][ending_space[1]].king = True
+                                starting_space = ending_space
+                                self.king_double_jump_check(starting_space, player_color)
+                                return True
+                            starting_space = ending_space
+                            self.double_jump_check(starting_space, player_color)
+                            return True
+                        else:
+                            # Jump is invalid. Return False
+                            return False
+            except IndexError:
+                print('index error testing red')
+
         elif player_color == 'blue':
             if starting_space[0] - ending_space[0] == 2 and starting_space[1] - ending_space[1] == 2: # UP / LEFT
-                if self.board[starting_space[0] - 1][starting_space[1] - 1].color == opponent_color:
-                    # Jump is Valid
-                    self.board[starting_space[0]][starting_space[1]] = None
-                    if self.board[starting_space[0] - 1][starting_space[1] - 1].king == True:
-                        enemy_piece_is_king = True
-                    self.board[starting_space[0] - 1][starting_space[1] - 1] = None
-                    self.board[ending_space[0]][ending_space[1]] = Checkers_Piece('blue')
-                    if enemy_piece_is_king == True:
-                        self.board[ending_space[0]][ending_space[1]].king = True
+                if self.board[starting_space[0] - 1][starting_space[1] - 1] is not None:
+                    if self.board[starting_space[0] - 1][starting_space[1] - 1].color == opponent_color:
+                        # Jump is Valid
+                        self.board[starting_space[0]][starting_space[1]] = None
+                        if self.board[starting_space[0] - 1][starting_space[1] - 1].king == True:
+                            enemy_piece_is_king = True
+                        self.board[starting_space[0] - 1][starting_space[1] - 1] = None
+                        self.board[ending_space[0]][ending_space[1]] = Checkers_Piece('blue')
+                        if enemy_piece_is_king == True:
+                            self.board[ending_space[0]][ending_space[1]].king = True
+                            starting_space = ending_space
+                            self.king_double_jump_check(starting_space, player_color)
+                            return True
                         starting_space = ending_space
-                        self.king_double_jump_check(starting_space, player_color)
+                        self.double_jump_check(starting_space, player_color)
                         return True
-                    starting_space = ending_space
-                    self.double_jump_check(starting_space, player_color)
-                    return True
-                else:
-                    # Jump is invalid. Return False
-                    return False
+                    else:
+                        # Jump is invalid. Return False
+                        return False
             elif starting_space[0] - ending_space[0] == 2 and starting_space[1] - ending_space[1] == -2: # UP / RIGHT
-                if self.board[starting_space[0] - 1][starting_space[1] + 1].color == opponent_color:
-                    # Jump is Valid
-                    self.board[starting_space[0]][starting_space[1]] = None
-                    if self.board[starting_space[0] - 1][starting_space[1] + 1].king == True:
-                        enemy_piece_is_king = True
-                    self.board[starting_space[0] - 1][starting_space[1] + 1] = None
-                    self.board[ending_space[0]][ending_space[1]] = Checkers_Piece('blue')
-                    if enemy_piece_is_king == True:
-                        self.board[ending_space[0]][ending_space[1]].king = True
+                if self.board[starting_space[0] - 1][starting_space[1] + 1] is not None:
+                    if self.board[starting_space[0] - 1][starting_space[1] + 1].color == opponent_color:
+                        # Jump is Valid
+                        self.board[starting_space[0]][starting_space[1]] = None
+                        if self.board[starting_space[0] - 1][starting_space[1] + 1].king == True:
+                            enemy_piece_is_king = True
+                        self.board[starting_space[0] - 1][starting_space[1] + 1] = None
+                        self.board[ending_space[0]][ending_space[1]] = Checkers_Piece('blue')
+                        if enemy_piece_is_king == True:
+                            self.board[ending_space[0]][ending_space[1]].king = True
+                            starting_space = ending_space
+                            self.king_double_jump_check(starting_space, player_color)
+                            return True
                         starting_space = ending_space
-                        self.king_double_jump_check(starting_space, player_color)
+                        self.double_jump_check(starting_space, player_color)
                         return True
-                    starting_space = ending_space
-                    self.double_jump_check(starting_space, player_color)
-                    return True
-                    # Jump logic here, make sure to handle king pieces
-                else:
-                    return False 
+                        # Jump logic here, make sure to handle king pieces
+                    else:
+                        return False
+             
         else:
             return False
             
@@ -175,7 +184,9 @@ class Checkers_Board:
                 self.board[starting_space[0]][starting_space[1]] = None
                 self.board[starting_space[0] + 1][starting_space[1] - 1] = None
                 self.board[starting_space[0] + 2][starting_space[1] - 2] = Checkers_Piece(player_color)
+                self.board[starting_space[0] + 2][starting_space[1] - 2].king = True
                 starting_space = ending_space
+                self.print_board()
                 self.king_double_jump_check(starting_space, player_color)
                 return True
             else:
@@ -187,7 +198,9 @@ class Checkers_Board:
                 self.board[starting_space[0]][starting_space[1]] = None
                 self.board[starting_space[0] + 1][starting_space[1] + 1] = None
                 self.board[starting_space[0] + 2][starting_space[1] + 2] = Checkers_Piece(player_color)
+                self.board[starting_space[0] + 2][starting_space[1] + 2].king = True
                 starting_space = ending_space
+                self.print_board()
                 self.king_double_jump_check(starting_space, player_color)
                 return True
             else:
@@ -198,7 +211,9 @@ class Checkers_Board:
                 self.board[starting_space[0]][starting_space[1]] = None
                 self.board[starting_space[0] - 1][starting_space[1] - 1] = None
                 self.board[starting_space[0] - 2][starting_space[1] - 2] = Checkers_Piece(player_color)
+                self.board[starting_space[0] - 2][starting_space[1] - 2].king = True
                 starting_space = ending_space
+                self.print_board()
                 self.king_double_jump_check(starting_space, player_color)
                 return True
             else:
@@ -212,7 +227,9 @@ class Checkers_Board:
                 self.board[starting_space[0]][starting_space[1]] = None
                 self.board[starting_space[0] - 1][starting_space[1] + 1] = None
                 self.board[starting_space[0] - 2][starting_space[1] + 2] = Checkers_Piece(player_color)
+                self.board[starting_space[0] - 2][starting_space[1] + 2].king = True
                 starting_space = ending_space
+                self.print_board()
                 self.king_double_jump_check(starting_space, player_color)
                 return True
             else:
@@ -402,12 +419,11 @@ class Checkers_Board:
                             print('up right appended')
             except IndexError:
                 pass   
-        # we MIGHT need to redeclare starting_space every single recursive call
+        
         process_valid_jumps(valid_jumps, starting_space, player_color)             
 
     def king_double_jump_check(self, starting_space, player_color):
-            # I think this first var is not needed:
-            # self.starting_space = starting_space
+            
             opponent_color = ''
             if player_color == 'red':
                 opponent_color = 'blue'
@@ -416,11 +432,11 @@ class Checkers_Board:
             
             print(starting_space)
             valid_jumps = []
-
+        # Code cycles through all 4 diagonals, and appends the possible jumps to list 'valid_jumps':
             # UP / LEFT check:
             try:
                 if starting_space[0] > 2 and starting_space[1] > 2:
-                    if self.board[starting_space[0] - 1][starting_space[1] - 1] is not None and self.board[starting_space[0] - 1] != 1 and self.board[starting_space[1] - 1] != 8:
+                    if self.board[starting_space[0] - 1][starting_space[1] - 1] is not None and self.board[starting_space[0] - 1][starting_space[1] - 1].color == opponent_color:
                         # Check for opposite color and empty space
                             if self.board[starting_space[0] - 1][starting_space[1] - 1].color == opponent_color and self.board[starting_space[0] - 2][starting_space[1] - 2] == None:
                                 valid_jumps.append('up left')
@@ -430,16 +446,16 @@ class Checkers_Board:
             # UP / RIGHT check:
             try:
                 if starting_space[0] > 2 and starting_space[1] < 7:
-                    if self.board[starting_space[0] - 1][starting_space[1] + 1] is not None and self.board[starting_space[0] - 1] != 1 and self.board[starting_space[1] + 1] != 8:
+                    if self.board[starting_space[0] - 1][starting_space[1] + 1] is not None and self.board[starting_space[0] - 1][starting_space[1] + 1].color == opponent_color:
                             if self.board[starting_space[0] - 1][starting_space[1] + 1].color == opponent_color and self.board[starting_space[0] - 2][starting_space[1] + 2] == None:
                                 valid_jumps.append('up right')
                                 print('up right appended')
             except IndexError:
                 pass
-            # DOWN / RIGHT check: [7, 4] and [ 5 , 6] should be gone, [2, 5] should be king
+            # DOWN / RIGHT check:
             try:
                 if starting_space[0] < 7 and starting_space[1] < 7:
-                    if self.board[starting_space[0] + 1][starting_space[1] + 1] is not None and self.board[starting_space[0] + 1] != 1 and self.board[starting_space[1] + 1] != 8:
+                    if self.board[starting_space[0] + 1][starting_space[1] + 1] is not None and self.board[starting_space[0] + 1][starting_space[1] + 1].color == opponent_color:
                         if self.board[starting_space[0] + 1][starting_space[1] + 1].color == opponent_color and self.board[starting_space[0] + 2][starting_space[1] + 2] == None:
                             valid_jumps.append('down right')
                             print('down right appended')
@@ -448,7 +464,7 @@ class Checkers_Board:
             # DOWN / LEFT check:
             try:
                 if starting_space[0] < 7 and starting_space[1] > 2:
-                    if self.board[starting_space[0] + 1][starting_space[1] - 1] is not None and self.board[starting_space[0] + 1] != 1 and self.board[starting_space[1] - 1] != 8:
+                    if self.board[starting_space[0] + 1][starting_space[1] - 1] is not None and self.board[starting_space[0] + 1][starting_space[1] - 1].color == opponent_color:
                         if self.board[starting_space[0] + 1][starting_space[1] - 1].color == opponent_color and self.board[starting_space[0] + 2][starting_space[1] + 2] == None:
                             valid_jumps.append('down left')
                             print('down left appended')
@@ -462,51 +478,37 @@ class Checkers_Board:
                     self.board[starting_space[0] - 1][starting_space[1] - 1] = None
                     self.board[starting_space[0] - 2][starting_space[1] - 2] = Checkers_Piece(player_color)
                     self.board[starting_space[0] - 2][starting_space[1] - 2].king = True
-                    print('up left king double jump debug, delete when done')
-                    if player_color == 'red':
-                        self.red_score += 1
-                    else:
-                        self.blue_score += 1
                     starting_space = [starting_space[0] - 2, starting_space[1] - 2]
-                                       
-                    self.king_double_jump_check(starting_space, player_color)
-                    return
+                    self.print_board()                
+                    return self.king_double_jump_check(starting_space, player_color)
+                    
                 elif valid_jumps[0] == 'up right':
                     self.board[starting_space[0]][starting_space[1]] = None
                     self.board[starting_space[0] - 1][starting_space[1] + 1] = None
                     self.board[starting_space[0] - 2][starting_space[1] + 2] = Checkers_Piece(player_color)
                     self.board[starting_space[0] - 2][starting_space[1] + 2].king = True
-                    if player_color == 'red':
-                        self.red_score += 1
-                    else:
-                        self.blue_score += 1
-                    starting_space = [starting_space[0] - 2, starting_space[1] + 2]                   
-                    self.king_double_jump_check(starting_space, player_color)
-                    return
+                    starting_space = [starting_space[0] - 2, starting_space[1] + 2]
+                    self.print_board() 
+                    return self.king_double_jump_check(starting_space, player_color)
+                    
                 elif valid_jumps[0] == 'down right':
                     self.board[starting_space[0]][starting_space[1]] = None
                     self.board[starting_space[0] + 1][starting_space[1] + 1] = None
                     self.board[starting_space[0] + 2][starting_space[1] + 2] = Checkers_Piece(player_color)
                     self.board[starting_space[0] + 2][starting_space[1] + 2].king = True
-                    if player_color == 'red':
-                        self.red_score += 1
-                    else:
-                        self.blue_score += 1
-                    starting_space = [starting_space[0] + 2, starting_space[1] + 2]                   
-                    self.king_double_jump_check(starting_space, player_color)
-                    return
+                    starting_space = [starting_space[0] + 2, starting_space[1] + 2]
+                    self.print_board()                   
+                    return self.king_double_jump_check(starting_space, player_color)
+                    
                 elif valid_jumps[0] == 'down left':
                     self.board[starting_space[0]][starting_space[1]] = None
                     self.board[starting_space[0] + 1][starting_space[1] - 1] = None
                     self.board[starting_space[0] + 2][starting_space[1] - 2] = Checkers_Piece(player_color)
                     self.board[starting_space[0] + 2][starting_space[1] - 2].king = True
-                    if player_color == 'red':
-                        self.red_score += 1
-                    else:
-                        self.blue_score += 1
-                    starting_space = [starting_space[0] + 2, starting_space[1] - 2]                   
-                    self.king_double_jump_check(starting_space, player_color)
-                    return
+                    starting_space = [starting_space[0] + 2, starting_space[1] - 2]
+                    self.print_board()                   
+                    return self.king_double_jump_check(starting_space, player_color)
+                    
                 
             elif len(valid_jumps) > 1:
                 valid_input = False
@@ -524,9 +526,10 @@ class Checkers_Board:
                             self.red_score += 1
                         else:
                             self.blue_score += 1
-                        starting_space = [starting_space[0] - 2, starting_space[1] - 2]                        
-                        self.king_double_jump_check(starting_space, player_color)
-                        return
+                        starting_space = [starting_space[0] - 2, starting_space[1] - 2]
+                        self.print_board()                        
+                        return self.king_double_jump_check(starting_space, player_color)
+                        
                     elif ending_space == 'up right':
                         self.board[starting_space[0]][starting_space[1]] = None
                         self.board[starting_space[0] - 1][starting_space[1] + 1] = None
@@ -536,9 +539,10 @@ class Checkers_Board:
                             self.red_score += 1
                         else:
                             self.blue_score += 1
-                        starting_space = [starting_space[0] - 2, starting_space[1] + 2]                       
-                        self.king_double_jump_check(starting_space, player_color)
-                        return
+                        starting_space = [starting_space[0] - 2, starting_space[1] + 2]
+                        self.print_board()                        
+                        return self.king_double_jump_check(starting_space, player_color)
+                        
                     elif ending_space == 'down right':
                         self.board[starting_space[0]][starting_space[1]] = None
                         self.board[starting_space[0] + 1][starting_space[1] + 1] = None
@@ -548,9 +552,10 @@ class Checkers_Board:
                             self.red_score += 1
                         else:
                             self.blue_score += 1
-                        starting_space = [starting_space[0] + 2, starting_space[1] + 2]                        
-                        self.king_double_jump_check(starting_space, player_color)
-                        return
+                        starting_space = [starting_space[0] + 2, starting_space[1] + 2]
+                        self.print_board()                         
+                        return self.king_double_jump_check(starting_space, player_color)
+                        
                     elif ending_space == 'down left':
                         self.board[starting_space[0]][starting_space[1]] = None
                         self.board[starting_space[0] + 1][starting_space[1] - 1] = None
@@ -561,8 +566,9 @@ class Checkers_Board:
                         else:
                             self.blue_score += 1
                         starting_space = [starting_space[0] + 2, starting_space[1] - 2]
-                        self.king_double_jump_check(starting_space, player_color)
-                        return
+                        self.print_board() 
+                        return self.king_double_jump_check(starting_space, player_color)
+                        
             else: # No double jumps found
                 return
             
@@ -584,8 +590,7 @@ class Checkers_Board:
                     starting_space = list(map(int, starting_input.split(',')))
                     if len(starting_space) != 2 or starting_space[0] <= 0 or starting_space[1] <= 0 or starting_space[0] >= 9 or starting_space[1] >= 9:
                         raise ValueError
-                    
-                    break # Not sure why a BREAK is needed here, I thought the is_valid_input = True would work
+                    break 
                 except ValueError:
                     print(RED + 'ERROR: ' + RESET + 'Invalid input format. Please enter two integers separated by a comma (ex: 1, 2)1')
                 
@@ -593,8 +598,7 @@ class Checkers_Board:
                 print(RED + 'ERROR: ' + RESET + 'That space does not contain a valid piece!1')
             else:
                 is_valid_piece = True
-            # COULD be an issue here, when a jump attempt is considered falsey, I dont know if i handled the while loops correctly
-            #   ^^ Need to have the user enter another move if jump attempt fails.
+            
             # Select space to move to (REGULAR piecex):
             if self.board[starting_space[0]][starting_space[1]].king == False:
                 while is_valid_move == False:
@@ -604,11 +608,14 @@ class Checkers_Board:
                             ending_space = list(map(int, ending_input.split(',')))
                             if len(ending_space) != 2 or ending_space[0] <= 0 or ending_space[1] <= 0 or ending_space[0] >= 9 or ending_space[1] >= 9:
                                 raise ValueError
-                            # perhaps do NOT change this to true, just use BREAK - That way when we fail a jump attempt, we can loop again:
+                            print('test123123')
                             is_valid_input = True
+                            
                         except ValueError:
                             (RED + 'ERROR: ' + RESET + 'Invalid input!1')
-
+                        print('debug123')
+                        # Jump attempts:
+                        
                         if abs(starting_space[0] - ending_space[0]) == 2:
                             if self.current_player == 'red': 
                                 if starting_space[0] - ending_space[0] == -2 and self.board[ending_space[0]][ending_space[1]] is None:
@@ -636,8 +643,37 @@ class Checkers_Board:
                                         is_valid_input = False
                                         continue
 
+                        # Regular movements:
+                        elif abs(starting_space[0] - ending_space[0]) == 1:
+                            
+                            if self.current_player == 'red':
+                                print('red movement debug1')
+                                if starting_space[0] - ending_space[0] == -1 and self.board[ending_space[0]][ending_space[1]] is None:
+                                    # move is valid AS FAR AS I KNOW
+                                    self.board[starting_space[0]][starting_space[1]] = None
+                                    self.board[ending_space[0]][ending_space[1]] = Checkers_Piece('red')
+                                    is_valid_move = True
+                                    return
+                                else:
+                                    print('ERROR: Invalid movement. (blue movement block)')
+                                    # probably bad design?
+                                    self.print_board()
+                                    return self.get_users_move(self.current_player)
+                            elif self.current_player == 'blue':
+                                print('blue movement debug1')
+                                if starting_space[0] - ending_space[0] == 1 and self.board[ending_space[0]][ending_space[1]] is None:
+                                    self.board[starting_space[0]][starting_space[1]] = None
+                                    self.board[ending_space[0]][ending_space[1]] = Checkers_Piece('blue')
+                                    is_valid_move = True
+                                    print('blue test test test')
+                                    return
+                                else:
+                                    print('ERROR: Invalid movement. (blue movement block)')
+                                    # probably bad design?
+                                    self.print_board()
+                                    return self.get_users_move(self.current_player)
                         else:
-                            # Just move the piece?
+                            print('move is invalid? debug test (regular piece block)')
                             pass
             elif self.board[starting_space[0]][starting_space[1]].king == True:
                 while is_valid_move  == False:
@@ -647,7 +683,7 @@ class Checkers_Board:
                             ending_space = list(map(int, ending_input.split(',')))
                             if len(ending_space) != 2 or ending_space[0] <= 0 or ending_space[1] <= 0 or ending_space[0] >= 9 or ending_space[1] >= 9:
                                 raise ValueError
-                            is_valid_input = True
+                            break
                         except ValueError:
                             (RED + 'ERROR: ' + RESET + 'Invalid input!  kingpiece 1')
                     
@@ -655,32 +691,41 @@ class Checkers_Board:
                         # Check for jump. Do color checking inside the 'king_double_jump()' func:
                         is_jump_valid_boolean = self.king_is_jump_valid(starting_space, ending_space, self.current_player)
                         if is_jump_valid_boolean == True:
-                            break
+                            is_valid_move = True
+                            return
+                     
+                    if abs(starting_space[0] - ending_space[0]) == 1 and self.board[ending_space[0]][ending_space[1]] == None: # [3, 6] -> [4, 5]
+                        # move is valid
+                        self.board[starting_space[0]][starting_space[1]] = None
+                        self.board[ending_space[0]][ending_space[1]] = Checkers_Piece(self.current_player)
+                        self.board[ending_space[0]][ending_space[1]].king = True
+                        return
+                    else:
+                        print('debug test end of king movement block')
+                        continue
+                            
+                                
+
                 
                             
-                        
-
-
-
-
 # MAIN script:
 board = Checkers_Board()
 board.make_board()
 
-board.board[4][3] = Checkers_Piece('blue')
-board.board[5][6] = Checkers_Piece('red')
-board.board[7][4] = Checkers_Piece('red')
-board.board[8][3].king = True
-board.board[2][5] = None
-board.board[6][5] = None
-board.board[4][3] = None
-board.board[2][1] = None
-board.board[7][8] = None
-board.board[6][7].king = True
+# board.board[4][3] = Checkers_Piece('blue')
+# board.board[5][6] = Checkers_Piece('red')
+# board.board[7][4] = Checkers_Piece('red')
+# board.board[8][3].king = True
+# board.board[2][5] = None
+# board.board[6][5] = None
+# board.board[4][3] = None
+# board.board[2][1] = None
+# board.board[7][8] = None
+# board.board[6][7].king = True
 
-board.board[5][4] = Checkers_Piece('red')
-board.board[5][4].king = True
-board.board[2][3] = None
+# board.board[5][4] = Checkers_Piece('red')
+
+# board.board[2][3] = None
 
 
 
