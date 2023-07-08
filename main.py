@@ -178,7 +178,8 @@ class Checkers_Board:
         if player_color == 'blue':
             opponent_color = 'red'
 
-        if starting_space[0] - ending_space[0] == -2 and starting_space[1] - ending_space[1] == 2: # DOWN / LEFT
+        # DOWN / LEFT
+        if starting_space[0] - ending_space[0] == -2 and starting_space[1] - ending_space[1] == 2 and self.board[starting_space[0] + 1][starting_space[1] - 1] is not None:
             if self.board[starting_space[0] + 1][starting_space[1] - 1].color == opponent_color:
                 # Jump is valid
                 self.board[starting_space[0]][starting_space[1]] = None
@@ -192,7 +193,9 @@ class Checkers_Board:
             else:
                 # Jump is invalid. Return False
                 return False
-        elif starting_space[0] - ending_space[0] == -2 and starting_space[1] - ending_space[1] == -2: # DOWN / RIGHT
+            
+        # DOWN / RIGHT
+        elif starting_space[0] - ending_space[0] == -2 and starting_space[1] - ending_space[1] == -2 and self.board[starting_space[0] + 1][starting_space[1] + 1] is not None:
             if self.board[starting_space[0] + 1][starting_space[1] + 1].color == opponent_color:
                 # Jump is valid
                 self.board[starting_space[0]][starting_space[1]] = None
@@ -205,7 +208,9 @@ class Checkers_Board:
                 return True
             else:
                 return False
-        elif starting_space[0] - ending_space[0] == 2 and starting_space[1] - ending_space[1] == 2: # UP / LEFT
+            
+        # UP / LEFT
+        elif starting_space[0] - ending_space[0] == 2 and starting_space[1] - ending_space[1] == 2 and self.board[starting_space[0] - 1][starting_space[1] - 1] is not None:
             if self.board[starting_space[0] - 1][starting_space[1] - 1].color == opponent_color:
                 # Jump is valid
                 self.board[starting_space[0]][starting_space[1]] = None
@@ -219,7 +224,9 @@ class Checkers_Board:
             else:
                 # Jump is invalid. Return False
                 return False
-        elif starting_space[0] - ending_space[0] == 2 and starting_space[1] - ending_space[1] == -2: # UP / RIGHT
+            
+         # UP / RIGHT
+        elif starting_space[0] - ending_space[0] == 2 and starting_space[1] - ending_space[1] == -2 and self.board[starting_space[0] - 1][starting_space[1] + 1] is not None:
             print('test debug remove when done:')
             print(self.board[starting_space[0] - 1][starting_space[1] + 1].color)
             if self.board[starting_space[0] - 1][starting_space[1] + 1].color == opponent_color:
@@ -581,25 +588,29 @@ class Checkers_Board:
         is_valid_piece = False
         is_valid_input = False
         is_valid_move = False
-
+        # Need to add check for 'is this space none?' when selecting a piece, else the program breaks:
         while is_valid_piece == False:
             while is_valid_input == False:
                 try:
                     starting_input = input('Select a piece to move (ex: i, j): ')
                     starting_space = list(map(int, starting_input.split(',')))
                     if len(starting_space) != 2 or starting_space[0] <= 0 or starting_space[1] <= 0 or starting_space[0] >= 9 or starting_space[1] >= 9:
-                        raise ValueError
-                    is_valid_input = True
+                        print(RED + 'ERROR: ' + RESET + 'Out of bounds. 1')
+                        continue
+                    if self.board[starting_space[0]][starting_space[1]] is None or self.board[starting_space[0]][starting_space[1]].color != self.current_player:
+                        print(RED + 'ERROR: ' + RESET + 'That space does not contain a valid piece!1')
+                        continue
+                    else:
+                        is_valid_input = True
                      
                 except ValueError:
                     print(RED + 'ERROR: ' + RESET + 'Invalid input format. Please enter two integers separated by a comma (ex: 1, 2)1')
                 
-            if self.board[starting_space[0]][starting_space[1]] is None or self.board[starting_space[0]][starting_space[1]].color != self.current_player:
-                print(RED + 'ERROR: ' + RESET + 'That space does not contain a valid piece!1')
+            
             else:
                 is_valid_piece = True
             
-            # Select space to move to (REGULAR piecex):
+            # Select space to move to (REGULAR piece):
             
             is_valid_input = False
             if self.board[starting_space[0]][starting_space[1]].king == False:
@@ -609,9 +620,22 @@ class Checkers_Board:
                             ending_input = input('Select space to move to (ex: i, j): ')
                             ending_space = list(map(int, ending_input.split(',')))
                             if len(ending_space) != 2 or ending_space[0] <= 0 or ending_space[1] <= 0 or ending_space[0] >= 9 or ending_space[1] >= 9:
-                                print('ERROR: Out of bounds.')
-                                raise ValueError
-                            is_valid_input = True
+                                print(RED + 'ERROR: ' + RESET + 'Out of bounds.')
+                                continue
+                            if abs(starting_space[0] - ending_space[0]) == 1 and abs(starting_space[1] - ending_space[1]) != 1:
+                                print(RED + 'ERROR: ' + RESET + 'Invalid move1.')
+                                continue
+                            if abs(starting_space[0] - ending_space[0]) == -1 and abs(starting_space[1] - ending_space[1]) == 1:
+                                print(RED + 'ERROR: ' + RESET + 'Invalid move2.')
+                                continue
+                            if abs(starting_space[0] - ending_space[0]) == 2 and abs(starting_space[1] - ending_space[1]) != 2:
+                                print(RED + 'ERROR: ' + RESET + 'Invalid move3.')
+                                continue
+                            if abs(starting_space[0] - ending_space[0]) == -2 and abs(starting_space[1] - ending_space[1]) == 2:
+                                print(RED + 'ERROR: ' + RESET + 'Invalid move4.')
+                                continue
+                            else:
+                                is_valid_input = True
                                 
                         except ValueError:
                             print(RED + 'ERROR: ' + RESET + 'Invalid input format. Please enter two integers separated by a comma (ex: 1, 2)1')
@@ -677,7 +701,7 @@ class Checkers_Board:
                         print('ERROR: Invalid move.')
                         is_valid_input = False
                         break
-
+            # Select space to move to (KING piece)
             elif self.board[starting_space[0]][starting_space[1]].king == True:
                 while is_valid_move  == False:
                     while is_valid_input == False:
@@ -685,8 +709,24 @@ class Checkers_Board:
                             ending_input = input('Select space to move to (ex: i, j)')
                             ending_space = list(map(int, ending_input.split(',')))
                             if len(ending_space) != 2 or ending_space[0] <= 0 or ending_space[1] <= 0 or ending_space[0] >= 9 or ending_space[1] >= 9:
-                                raise ValueError
-                            break
+                                print(RED + 'ERROR: ' + RESET + 'Out of bounds. king')
+                                continue
+                            if abs(starting_space[0] - ending_space[0]) == 1 and abs(starting_space[1] - ending_space[1]) != 1:
+                                print(RED + 'ERROR: ' + RESET + 'Invalid move1. king')
+                                continue
+                            if abs(starting_space[0] - ending_space[0]) == -1 and abs(starting_space[1] - ending_space[1]) == 1:
+                                print(RED + 'ERROR: ' + RESET + 'Invalid move2. king')
+                                continue
+                            if abs(starting_space[0] - ending_space[0]) == 2 and abs(starting_space[1] - ending_space[1]) != 2:
+                                print(RED + 'ERROR: ' + RESET + 'Invalid move3. king')
+                                continue
+                            if abs(starting_space[0] - ending_space[0]) == -2 and abs(starting_space[1] - ending_space[1]) == 2:
+                                print(RED + 'ERROR: ' + RESET + 'Invalid move4. king')
+                                continue
+                            else:
+                                is_valid_input = True
+                            # removed a break here?
+
                         except ValueError:
                             (RED + 'ERROR: ' + RESET + 'Invalid input!  kingpiece 1')
                     
@@ -704,8 +744,10 @@ class Checkers_Board:
                         self.board[ending_space[0]][ending_space[1]].king = True
                         return
                     else:
-                        print('debug test end of king movement block')
-                        continue
+                        print(RED + 'ERROR: ' + RESET + 'Invalid move (end of king movement block)')
+                        is_valid_move = False
+                        is_valid_input = False
+                        
                             
                                 
 
@@ -729,6 +771,7 @@ board.make_board()
 # board.board[5][4] = Checkers_Piece('red')
 
 # board.board[2][3] = None
+board.board[6][1].king = True
 
 
 
