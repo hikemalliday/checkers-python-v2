@@ -470,7 +470,7 @@ class Checkers_Board:
                             print('down left appended')
             except IndexError:
                 pass
-            # If jump is single, force it:
+            # Only one possible jump route. Force it:
             print(valid_jumps)
             if len(valid_jumps) == 1:
                 if valid_jumps[0] == 'up left':
@@ -508,8 +508,7 @@ class Checkers_Board:
                     starting_space = [starting_space[0] + 2, starting_space[1] - 2]
                     self.print_board()                   
                     return self.king_double_jump_check(starting_space, player_color)
-                    
-                
+            # More than one possible choice:       
             elif len(valid_jumps) > 1:
                 valid_input = False
                 while valid_input == False:
@@ -590,7 +589,8 @@ class Checkers_Board:
                     starting_space = list(map(int, starting_input.split(',')))
                     if len(starting_space) != 2 or starting_space[0] <= 0 or starting_space[1] <= 0 or starting_space[0] >= 9 or starting_space[1] >= 9:
                         raise ValueError
-                    break 
+                    is_valid_input = True
+                     
                 except ValueError:
                     print(RED + 'ERROR: ' + RESET + 'Invalid input format. Please enter two integers separated by a comma (ex: 1, 2)1')
                 
@@ -600,6 +600,8 @@ class Checkers_Board:
                 is_valid_piece = True
             
             # Select space to move to (REGULAR piecex):
+            
+            is_valid_input = False
             if self.board[starting_space[0]][starting_space[1]].king == False:
                 while is_valid_move == False:
                     while is_valid_input == False:
@@ -607,74 +609,75 @@ class Checkers_Board:
                             ending_input = input('Select space to move to (ex: i, j): ')
                             ending_space = list(map(int, ending_input.split(',')))
                             if len(ending_space) != 2 or ending_space[0] <= 0 or ending_space[1] <= 0 or ending_space[0] >= 9 or ending_space[1] >= 9:
+                                print('ERROR: Out of bounds.')
                                 raise ValueError
-                            print('test123123')
                             is_valid_input = True
-                            
+                                
                         except ValueError:
-                            (RED + 'ERROR: ' + RESET + 'Invalid input!1')
-                        print('debug123')
+                            print(RED + 'ERROR: ' + RESET + 'Invalid input format. Please enter two integers separated by a comma (ex: 1, 2)1')
+                        
                         # Jump attempts:
                         
-                        if abs(starting_space[0] - ending_space[0]) == 2:
-                            if self.current_player == 'red': 
-                                if starting_space[0] - ending_space[0] == -2 and self.board[ending_space[0]][ending_space[1]] is None:
-                                    # Could set the return value to this method to boolean, save as var, and exit state or display message based on bool
-                                    is_jump_valid_boolean = self.is_jump_valid(starting_space, ending_space, self.current_player)
-                                    if is_jump_valid_boolean == True:
-                                        # Break the loop
-                                        is_valid_move = True
-                                        return
-                                    else:
-                                        # Jump is invalid
-                                        print('Invalid move! (jump attempt, red player)')
-                                        is_valid_input = False
-                                        continue
-                            elif self.current_player == 'blue':
-                                if starting_space[0] - ending_space[0] == 2 and self.board[ending_space[0]][ending_space[1]] is None:
-                                    is_jump_valid_boolean = self.is_jump_valid(starting_space, ending_space, self.current_player)
-                                    if is_jump_valid_boolean == True:
-                                        # Break the loop
-                                        is_valid_move = True
-                                        return
-                                    else:
-                                        # Jump is invalid
-                                        print('Invalid move! (jump attempt, blue player)')
-                                        is_valid_input = False
-                                        continue
+                    if abs(starting_space[0] - ending_space[0]) == 2:
+                        if self.current_player == 'red': 
+                            if starting_space[0] - ending_space[0] == -2 and self.board[ending_space[0]][ending_space[1]] is None:
+                                # Could set the return value to this method to boolean, save as var, and exit state or display message based on bool
+                                is_jump_valid_boolean = self.is_jump_valid(starting_space, ending_space, self.current_player)
+                                if is_jump_valid_boolean == True:
+                                    # Break the loop
+                                    is_valid_move = True
+                                    return
+                                else:
+                                    # Jump is invalid
+                                    print('Invalid move! (jump attempt, red player)')
+                                    is_valid_input = False
+                                    continue
+                        elif self.current_player == 'blue':
+                            if starting_space[0] - ending_space[0] == 2 and self.board[ending_space[0]][ending_space[1]] is None:
+                                is_jump_valid_boolean = self.is_jump_valid(starting_space, ending_space, self.current_player)
+                                if is_jump_valid_boolean == True:
+                                    # Break the loop
+                                    is_valid_move = True
+                                    return
+                                else:
+                                    # Jump is invalid
+                                    print('Invalid move! (jump attempt, blue player)')
+                                    is_valid_input = False
+                                    continue
 
-                        # Regular movements:
-                        elif abs(starting_space[0] - ending_space[0]) == 1:
-                            
-                            if self.current_player == 'red':
-                                print('red movement debug1')
-                                if starting_space[0] - ending_space[0] == -1 and self.board[ending_space[0]][ending_space[1]] is None:
-                                    # move is valid AS FAR AS I KNOW
-                                    self.board[starting_space[0]][starting_space[1]] = None
-                                    self.board[ending_space[0]][ending_space[1]] = Checkers_Piece('red')
-                                    is_valid_move = True
-                                    return
-                                else:
-                                    print('ERROR: Invalid movement. (blue movement block)')
-                                    # probably bad design?
-                                    self.print_board()
-                                    return self.get_users_move(self.current_player)
-                            elif self.current_player == 'blue':
-                                print('blue movement debug1')
-                                if starting_space[0] - ending_space[0] == 1 and self.board[ending_space[0]][ending_space[1]] is None:
-                                    self.board[starting_space[0]][starting_space[1]] = None
-                                    self.board[ending_space[0]][ending_space[1]] = Checkers_Piece('blue')
-                                    is_valid_move = True
-                                    print('blue test test test')
-                                    return
-                                else:
-                                    print('ERROR: Invalid movement. (blue movement block)')
-                                    # probably bad design?
-                                    self.print_board()
-                                    return self.get_users_move(self.current_player)
-                        else:
-                            print('move is invalid? debug test (regular piece block)')
-                            pass
+                    # Regular movements:
+                    elif abs(starting_space[0] - ending_space[0]) == 1:
+                        
+                        if self.current_player == 'red':
+                            print('red movement debug1')
+                            if starting_space[0] - ending_space[0] == -1 and self.board[ending_space[0]][ending_space[1]] is None:
+                                # move is valid AS FAR AS I KNOW
+                                self.board[starting_space[0]][starting_space[1]] = None
+                                self.board[ending_space[0]][ending_space[1]] = Checkers_Piece('red')
+                                is_valid_move = True
+                                return
+                            else:
+                                print('ERROR: Invalid movement. (blue movement block)')
+                                # probably bad design?
+                                self.print_board()
+                                return self.get_users_move(self.current_player)
+                        elif self.current_player == 'blue':
+                            print('blue movement debug1')
+                            if starting_space[0] - ending_space[0] == 1 and self.board[ending_space[0]][ending_space[1]] is None:
+                                self.board[starting_space[0]][starting_space[1]] = None
+                                self.board[ending_space[0]][ending_space[1]] = Checkers_Piece('blue')
+                                is_valid_move = True
+                                return
+                            else:
+                                print('ERROR: Invalid movement. (blue movement block)')
+                                # probably bad design?
+                                self.print_board()
+                                return self.get_users_move(self.current_player)
+                    else:
+                        print('ERROR: Invalid move.')
+                        is_valid_input = False
+                        break
+
             elif self.board[starting_space[0]][starting_space[1]].king == True:
                 while is_valid_move  == False:
                     while is_valid_input == False:
