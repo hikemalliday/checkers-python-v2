@@ -1,0 +1,8 @@
+WHERE WE LEFT OFF:
+    -Tested the .py file, seems to work except the special '♛' char doesnt work in command line
+TODO:
+    -Change '♛' to 'K'
+    -I left a bunch of commented out 'refactoring' that i deemed unworthy ('process_valid_jumps()')
+    -All 'SCORE' stuff has been commented out for the time being
+BUGS:
+    
