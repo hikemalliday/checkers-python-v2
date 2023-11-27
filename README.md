@@ -5,7 +5,7 @@ My first attempt at Object Oriented Programming.
 
 For best results, running the main.py in powershell is recommended.
 
-The game asks a palyer for a turn, and after receiving the move start and move end coordinates, a new boardstate is rendered onto the screen.
+The game asks a player for a turn, and after receiving the move start and move end coordinates, a new boardstate is rendered onto the screen.
 
 Has logic to play just as a real game of checkers would play.
 
