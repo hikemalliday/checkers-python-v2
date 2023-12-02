@@ -1,11 +1,11 @@
 # checkers-python-v2
-#### A Python based checkers game that runs in the command line
+##### A Python based checkers game that runs in the command line
 
 My first attempt at Object Oriented Programming.
 
 For best results, running the main.py in powershell is recommended.
 
-Instructions:
+##### Instructions:
 
 Activate virtual venv: /venv/scripts/activate
 
