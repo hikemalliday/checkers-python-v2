@@ -7,7 +7,7 @@ For best results, running the main.py in powershell is recommended.
 
 ##### Instructions:
 
-Activate virtual venv: /venv/scripts/activate
+Activate virtual venv:   /venv/scripts/activate
 
 Then, run python main.py
 
