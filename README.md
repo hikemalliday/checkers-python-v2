@@ -7,9 +7,11 @@ For best results, running the main.py in powershell is recommended.
 
 ##### Instructions:
 
-Activate virtual venv:   `/venv/scripts/activate`
+1. Clone the repo
 
-Then, run `python main.py`
+2. Activate virtual venv:   `/venv/scripts/activate`
+
+3. Run `python main.py`
 
 The game asks a player for a turn, and after receiving the move start and move end coordinates, a new boardstate is rendered onto the screen.
 
