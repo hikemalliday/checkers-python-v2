@@ -6,7 +6,7 @@ My first attempt at Object Oriented Programming.
 For best results, running the main.py in powershell is recommended.
 
 ##### Instructions:
-
+No external libraries are required for this program, and no virtual environment is required.
 1. Clone the repo
 2. Run `python main.py`
 
